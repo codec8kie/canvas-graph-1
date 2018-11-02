@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>그래프</title>
+<style>
+
+canvas { background-color: #f5f5f5; }
+</style>
+</head>
+<body>
+
+<canvas id="graph" width="800" height="500"></canvas>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+
+var data = [105, 879, 157, 200, 200];
+var color = [];
+var maxVal = [];
+
+$.each(data, function (i, self){
+	maxVal.push(self);
+	color.push("rgb(" + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")");
+});
+
+maxVal = Math.floor(Math.max.apply(Math, maxVal)) + 50;
+
+var c = document.getElementById("graph");
+var ctx = c.getContext("2d");
+
+var w = c.width;
+var h = c.height;
+var x = w / 2;
+var r = w / 2;
+var y = h / 2;
+
+// draw
+var ydArr = [];
+var space = Math.floor(w / data.length) * .8;
+$.each(data, function (i, self){
+	var yd = Math.floor(h - (self / maxVal) * h);
+	ydArr.push(yd);
+	// draw(i, yd, 0);
+});
+
+function draw (i, yd, ok){
+
+	// draw
+	ctx.beginPath();
+	ctx.strokeStyle = color[i];
+	ctx.moveTo((i+1)*space, h);
+	ctx.lineTo((i+1)*space, h-ok);
+	ctx.lineWidth = 15;
+	ctx.stroke();
+	ctx.closePath();
+
+	ok += 3;
+
+	var loop = setTimeout(function (){
+		draw(i, yd, ok);
+	}, 1000/60);
+
+
+	if (ok > h-yd){
+		clearTimeout(loop);
+		if (i+1 < data.length){
+			draw(i+1, ydArr[i+1], 0);
+		};
+	};
+}
+
+draw(0, ydArr[0], 0);
+</script>
+
+</body>
+</html>
